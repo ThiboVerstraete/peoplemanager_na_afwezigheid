@@ -20,5 +20,22 @@ namespace PeopleManager.Ui.Mvc.Controllers
 
             return View(people);
         }
+
+        [HttpGet]
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Create(Person person)
+        {
+            _peopleManagerDbContext.People.Add(person);
+
+            _peopleManagerDbContext.SaveChanges();
+
+            return RedirectToAction("Index");
+        }
     }
 }
