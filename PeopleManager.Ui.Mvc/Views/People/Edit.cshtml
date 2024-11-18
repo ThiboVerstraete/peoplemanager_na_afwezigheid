@@ -1,18 +1,14 @@
 ﻿@model Person
 
+@{
+    ViewBag.Title = "Edit Person";
+}
+
+<h1>@ViewBag.Title</h1>
+
 <form method="post">
-    <div class="mb3">
-        <label asp-for="FirstName" class="form-label"></label>
-        <input asp-for="FirstName" class="form-control"/>
-    </div>
-    <div class="mb3">
-        <label asp-for="LastName" class="form-label"></label>
-        <input asp-for="LastName" class="form-control"/>
-    </div>
-    <div class="mb3">
-        <label asp-for="Email" class="form-label"></label>
-        <input asp-for="Email" class="form-control"/>
-    </div>
+    <partial name="CreateEditPartial" model="Model"/>
+
     <a asp-action="Index" class="btn btn-secondairy">Back</a>
-    <button type="submit" class="btn btn-primary">Create</button>
+    <button type="submit" class="btn btn-primary">Edit</button>
 </form>

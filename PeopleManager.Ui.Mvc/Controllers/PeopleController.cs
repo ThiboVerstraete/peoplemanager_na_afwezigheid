@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PeopleManager.Ui.Mvc.Core;
 using PeopleManager.Ui.Mvc.Models;
+using System;
 
 namespace PeopleManager.Ui.Mvc.Controllers
 {
@@ -29,7 +30,7 @@ namespace PeopleManager.Ui.Mvc.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Person person)
+        public IActionResult Create([FromForm]Person person)
         {
             _peopleManagerDbContext.People.Add(person);
 
@@ -39,7 +40,7 @@ namespace PeopleManager.Ui.Mvc.Controllers
         }
 
         [HttpGet]
-        public IActionResult Edit(int id)
+        public IActionResult Edit([FromRoute]int id)
         {
             var person = _peopleManagerDbContext.People.FirstOrDefault(x => x.Id == id);
             if (person == null)
@@ -52,7 +53,7 @@ namespace PeopleManager.Ui.Mvc.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, Person person)
+        public IActionResult Edit([FromRoute]int id, [FromForm]Person person)
         {
             var dbperson = _peopleManagerDbContext.People.FirstOrDefault(x => x.Id == id);
             if (dbperson == null)
@@ -63,6 +64,39 @@ namespace PeopleManager.Ui.Mvc.Controllers
             dbperson.FirstName = person.FirstName;
             dbperson.LastName = person.LastName;
             dbperson.Email = person.Email;
+
+            _peopleManagerDbContext.SaveChanges();
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public IActionResult Delete([FromRoute]int id)
+        {
+            var person = _peopleManagerDbContext.People.FirstOrDefault(x => x.Id == id);
+            if (person == null)
+            {
+                return RedirectToAction("Index");
+            }
+
+            return View(person);
+        }
+
+        [HttpPost]
+        [Route("People/Delete/{id}")]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeleteConfirm([FromRoute]int id)
+        {
+            var person = new Person
+            {
+                Id = id,
+                FirstName = string.Empty,
+                LastName = string.Empty
+            };
+
+            _peopleManagerDbContext.People.Attach(person);
+
+            _peopleManagerDbContext.People.Remove(person);
 
             _peopleManagerDbContext.SaveChanges();
 
